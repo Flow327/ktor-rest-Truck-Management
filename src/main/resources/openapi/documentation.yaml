@@ -1,0 +1,141 @@
+openapi: "3.0.3"
+info:
+  title: "ktor_rest API"
+  description: "ktor_rest API"
+  version: "1.0.0"
+servers:
+- url: "https://ktor_rest"
+paths:
+  /:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/FreeMarkerContent"
+  /delete:
+    get:
+      description: ""
+      parameters:
+      - name: "id"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/FreeMarkerContent"
+  /driver:
+    get:
+      description: ""
+      parameters:
+      - name: "action"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "id"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+    post:
+      description: ""
+      parameters:
+      - name: "action"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "name"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "parking"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "truckNumber"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "id"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "name"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "parking"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      - name: "truckNumber"
+        in: "query"
+        required: false
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/FreeMarkerContent"
+components:
+  schemas:
+    Object:
+      type: "object"
+      properties: {}
+    HeaderValueParam:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        value:
+          type: "string"
+        escapeValue:
+          type: "boolean"
+    ContentType:
+      type: "object"
+      properties:
+        contentType:
+          type: "string"
+        contentSubtype:
+          type: "string"
+        parameters:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/HeaderValueParam"
+    FreeMarkerContent:
+      type: "object"
+      properties:
+        template:
+          type: "string"
+        model:
+          $ref: "#/components/schemas/Object"
+        etag:
+          type: "string"
+        contentType:
+          $ref: "#/components/schemas/ContentType"
