@@ -1,5 +1,6 @@
 package com.example.dao
 
+
 import com.example.model.Driver
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -16,25 +17,49 @@ interface DAOFacade : Closeable {
     // Creates a driver in the database
     fun createDriver(
         name: String,
-        parking: String,
+        parking: Int,
+        door: Int,
         truckNumber: String,
         contents: String,
         container: String,
         comments: String,
-        timeStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString()
+        timeStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString(),
+        updateStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString(),
+        usedParking: Boolean,
+        usedDoors: Boolean
     )
 
     // Updates a driver in the database
     fun updateDriver(
         id: Int,
         name: String,
-        parking: String,
+        parking: Int,
+        door: Int,
         truckNumber: String,
         contents: String,
         container: String,
         comments: String,
-        timeStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString()
+        updateStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString() ?:"",
+        usedParking: Boolean,
+        usedDoors: Boolean
     )
+    // Add a function to convert a ResultRow to a Driver object
+    fun toDriver(row: ResultRow): Driver =
+        Driver(
+            id = row[Drivers.id],
+            name = row[Drivers.name],
+            parking = row[Drivers.parking],
+            door = row[Drivers.door],
+            truckNumber = row[Drivers.truckNumber],
+            contents = row[Drivers.contents],
+            container = row[Drivers.container],
+            comments = row[Drivers.comments],
+            timeStamp = row[Drivers.timeStamp],
+            updateStamp = row[Drivers.updateStamp] ?: "",
+            usedParking = row[Drivers.usedParking],
+            usedDoors = row[Drivers.usedDoors]
+        )
+
 
     // Deletes a driver from the database
     fun deleteDriver(id: Int)
@@ -44,60 +69,90 @@ interface DAOFacade : Closeable {
 
     // Gets all drivers from the database
     fun getAllDrivers(): List<Driver>
-}
 
+    // get unused parking numbers
+    fun getUnusedParkingNumbers(): List<Int>
+
+    // Set parking as unused function
+    fun setParkingAsUnused(parking: Int)
+
+    // get used door numbers function
+    fun getUnusedDoorNumbers(): List<Int>
+
+    // set door as unused function
+    fun setDoorAsUnused(door: Int)
+
+    // check if parking is used
+    fun isParkingUsed(parking: Int): Boolean
+
+    // check if door is used
+    fun isDoorUsed(door: Int): Boolean
+    // Function checks String in Search Bar
+    fun searchDrivers(query: String): List<Driver>
+}
 // Class for the DAO Facade Database
 class DAOFacadeDatabase(val db: Database) : DAOFacade {
     // Initializes the database
     override fun init() = transaction(db) {
-
-
+        //SchemaUtils.drop(Drivers)
+        //SchemaUtils.create(Drivers)
     }
 
     // Creates a driver in the database
     override fun createDriver(
         name: String,
-        parking: String,
+        parking: Int,
+        door: Int,
         truckNumber: String,
         contents: String,
         container: String,
         comments: String,
-        timeStamp: String
+        timeStamp: String,
+        updateStamp: String,
+        usedParking: Boolean,
+        usedDoors: Boolean
     ) = transaction(db) {
 
         // Inserts the driver into the Drivers table
         Drivers.insert {
-            it[Drivers.name] = name; it[Drivers.parking] = parking; it[Drivers.truckNumber] =
+            it[Drivers.name] = name; it[Drivers.parking] = parking; it[Drivers.door] = door; it[Drivers.truckNumber] =
             truckNumber; it[Drivers.contents] = contents; it[Drivers.container] = container
             it[Drivers.comments] = comments; it[Drivers.timeStamp] =
-            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString()
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString();
+            //it[Drivers.updateStamp] = updateStamp;
+            it[Drivers.usedParking] = usedParking;
+            it[Drivers.usedDoors] = usedDoors
         }
         // Returns Unit
         Unit
     }
 
-
     // Updates a driver in the database
     override fun updateDriver(
         id: Int,
         name: String,
-        parking: String,
+        parking: Int,
+        door: Int,
         truckNumber: String,
         contents: String,
         container: String,
         comments: String,
-        timeStamp: String
+        updateStamp: String,
+        usedParking: Boolean,
+        usedDoors: Boolean
     ) = transaction(db) {
         // Updates the driver in the Drivers table
         Drivers.update({ Drivers.id eq id }) {
             it[Drivers.name] = name
             it[Drivers.parking] = parking
+            it[Drivers.door] = door
             it[Drivers.truckNumber] = truckNumber
             it[Drivers.contents] = contents
             it[Drivers.container] = container
             it[Drivers.comments] = comments
-            it[Drivers.timeStamp] =
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString()
+            it[Drivers.updateStamp] = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString()
+            it[Drivers.usedParking] = usedParking
+            it[Drivers.usedDoors] = usedDoors
 
 
         }
@@ -125,11 +180,15 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                 it[Drivers.id],
                 it[Drivers.name],
                 it[Drivers.parking],
+                it[Drivers.door],
                 it[Drivers.truckNumber],
                 it[Drivers.contents],
                 it[Drivers.container],
                 it[Drivers.comments],
-                it[Drivers.timeStamp]
+                it[Drivers.timeStamp],
+                it[Drivers.updateStamp] ?:"",
+                it[Drivers.usedParking],
+                it[Drivers.usedDoors]
             )
         }.singleOrNull()
         // Returns the driver or null
@@ -144,19 +203,80 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                 it[Drivers.id],
                 it[Drivers.name],
                 it[Drivers.parking],
+                it[Drivers.door],
                 it[Drivers.truckNumber],
                 it[Drivers.contents],
                 it[Drivers.container],
                 it[Drivers.comments],
-                it[Drivers.timeStamp]
+                it[Drivers.timeStamp],
+                it[Drivers.updateStamp] ?:"",
+                it[Drivers.usedParking],
+                it[Drivers.usedDoors]
             )
         }
         // Returns the list of drivers
     }
 
+    override fun getUnusedParkingNumbers(): List<Int> {
+        return transaction {
+            Drivers.selectAll()
+                .map { it[Drivers.parking] }
+        }
+    }
+
+    override fun setParkingAsUnused(parking: Int) {
+        transaction {
+            Drivers.update({ Drivers.parking eq parking }) {
+                it[usedParking] = false
+            }
+        }
+
+    }
+
+
+    override fun getUnusedDoorNumbers(): List<Int> {
+        return transaction {
+            Drivers.selectAll()
+                .map { it[Drivers.door] }
+        }
+    }
+    override fun setDoorAsUnused(door: Int) {
+        transaction {
+            Drivers.update({ Drivers.door eq door }) {
+                it[usedDoors] = false
+            }
+        }
+    }
+
+    override fun isParkingUsed(parking: Int): Boolean {
+        return transaction {
+            Drivers.select {(Drivers.parking eq parking) and (Drivers.usedParking eq true)}.count() > 0
+        }
+    }
+
+    override fun isDoorUsed(door: Int): Boolean {
+        return transaction {
+            Drivers.select { (Drivers.door eq door ) and (Drivers.usedDoors eq true) }.count() > 0
+        }
+
+    }
+    // Function to search Drivers
+    override fun searchDrivers(query: String): List<Driver> {
+        val drivers = transaction(db) {
+            val queryInt = query.toIntOrNull() ?: -1
+            Drivers.select {
+                (Drivers.id eq queryInt) or
+                        (Drivers.door eq queryInt) or
+                        (Drivers.parking eq queryInt) or
+                        (Drivers.truckNumber like query)
+            }.map { toDriver(it) }
+        }
+        println(drivers)
+        return drivers
+    }
+
     // Closes the database
     override fun close() {
-
     }
 
 }

@@ -11,17 +11,12 @@
         }
     </style>
     <table class="table">
-        <thead class="thead-light">
+        <thead class="thead-dark">
         <tr>
             <th scope="col">Id</th>
             <th scope="col">Company Name</th>
             <th scope="col">Door Or Lane Number</th>
             <th scope="col">Trailer Number</th>
-            <th scope="col">Contents</th>
-            <th scope="col">Container</th>
-            <th scope="col">Comments</th>
-            <th scope="col">Time Stamp</th>
-            <th scope="col">Update Stamp</th>
             <th></th>
         </tr>
         </thead>
@@ -32,11 +27,6 @@
                 <td>${drv.name}</td>
                 <td>${drv.parking}</td>
                 <td>${drv.truckNumber}</td>
-                <td>${drv.contents}</td>
-                <td>${drv.container}</td>
-                <td>${drv.comments}</td>
-                <td>${drv.timeStamp}</td>
-                <td>${drv.updateStamp}</td>
                 <td>
                     <a href="/driver?action=edit&id=${drv.id}" class="btn btn-secondary" role="button">Edit</a>
                     <a href="/delete?id=${drv.id}" class="btn btn-danger" role="button">Del</a>
@@ -47,4 +37,3 @@
     </table>
 
 </@layout.mainLayout>
-

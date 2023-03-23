@@ -1,18 +1,29 @@
 <#import "template.ftl" as layout />
 <@layout.mainLayout title="New Driver">
-    <form action="/driver" method="post">
+    <form action="/driver" method="post" xmlns="http://www.w3.org/1999/html">
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" class="form-control" id="name" name="name" placeholder="Enter Company Name"
                    value="${(driver.name)!}">
         </div>
         <div class="form-group">
-            <label for="parking">Parking</label>
-            <input type="text" class="form-control" id="parking" name="parking" placeholder="Enter Parking Number"
-                   value="${(driver.parking)!}">
+            <label for="parking">Parking Or Door</label>
+            <select type="text" class="form-control" id="parking"  name="parking" placeholder="Select Parking number"
+                    value="${(driver.parking)!}">
+                <optgroup label="Parking Numbers">
+                    <#list parkingNumbers as number>
+                        <option value="${number}" <#if (driver.parking)!?string != "" && (driver.parking)!?number == number>selected</#if>>Parking Number ${number}</option>
+                    </#list>
+                </optgroup>
+                <optgroup label="Door Numbers">
+                    <#list doorNumbers as number>
+                        <option value="${number}" <#if (driver.door)!?string != "" && (driver.door)!?number == number>selected</#if>>Door Number ${number}</option>
+                    </#list>
+                    </optgroup>
+            </select>
         </div>
         <div class="form-group">
-            <label for="truckNumber">Truck Number</label>
+            <label for="truckNumber">Trailer Number</label>
             <input type="text" class="form-control" id="truckNumber" name="truckNumber" placeholder="Enter Truck Number"
                    value="${(driver.truckNumber)!}">
         </div>

@@ -15,6 +15,7 @@ import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -34,8 +35,6 @@ import org.jetbrains.exposed.sql.Database
 import org.slf4j.event.*
 import java.util.*
 import javax.mail.*
-import javax.mail.internet.InternetAddress
-import javax.mail.internet.MimeMessage
 
 // Create a DAO facade object to connect to the database
 val dao = DAOFacadeDatabase(
@@ -50,37 +49,7 @@ fun main() {
 // Start the server on port 8080
     embeddedServer(Netty, 8080, module = Application::myApplicationModule).start(wait = true)
 
-    // Send a test email
-    sendEmail("juliosilverio27@gmail.com", "Test 1", "Test Yard")
 }
-fun sendEmail(to: String, subject: String, body: String) {
-    val props = Properties()
-    props["mail.smtp.host"] = "sandbox.smtp.mailtrap.io"
-    props["mail.smtp.port"] = "25"
-    props["mail.smtp.auth"] = "true"
-    props["mail.smtp.starttls.enable"] = "false"
-
-    // Set additional authentication information if required by your corporate SMTP server
-    val username = "a58e58c60ffb8b"
-    val password = "4e74c57c46e151"
-
-    val authenticator = object : Authenticator() {
-        override fun getPasswordAuthentication(): PasswordAuthentication {
-            return PasswordAuthentication(username, password)
-        }
-    }
-    val session = Session.getInstance(props, authenticator)
-
-    val message = MimeMessage(session)
-    message.setFrom(InternetAddress("juliosilverio27@gmail.com"))
-    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to))
-    message.subject = subject
-    message.setText(body)
-
-    Transport.send(message)
-}
-
-
 // Function to get Weather
 fun getWeather(): WeatherResponse {
     val client = OkHttpClient()
@@ -107,6 +76,7 @@ fun getWeather(): WeatherResponse {
 fun Application.myApplicationModule() {
 // Initialize the database
     dao.init()
+
     configureRoutes()
 // Install callLogging feature
     install(CallLogging) {

@@ -1,3 +1,5 @@
+<#import "template.ftl" as layout />
+<@layout.mainLayout>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +12,7 @@
             padding: 50px;
         }
         .container {
+            display: table;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
@@ -26,11 +29,11 @@
     </style>
 </head>
 <#if weatherResponse.weather[0].description == "Clear">
-<body style="background-image: url('clear-sky.jpg');">
-<#elseif weatherResponse.weather[0].description == "Clouds">
-<body style="background-image: url('cloudy-sky.jpg');">
+<body style="background-image: url('/static/clear-sky.png');">
+<#elseif weatherResponse.weather[0].description == "overcast clouds">
+<body style="background-image: url('static/cloudy-sky.png');">
 <#elseif weatherResponse.weather[0].description == "few clouds">
-<body style="background-image: url('few-clouds.jpg')"
+    <body style="background-image: url('/static/few-clouds.png')"
 <#else>
 <body>
 </#if>
@@ -47,5 +50,7 @@
 </div>
 
 </body>
-
+</body>
+</body>
 </html>
+</@layout.mainLayout>
