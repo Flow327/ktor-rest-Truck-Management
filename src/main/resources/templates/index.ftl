@@ -45,6 +45,5 @@
         </#list>
         </tbody>
     </table>
-
 </@layout.mainLayout>
 

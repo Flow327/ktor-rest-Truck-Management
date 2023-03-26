@@ -3,6 +3,8 @@ package com.example.plugins
 import com.example.dao
 import com.example.getWeather
 import com.example.model.Driver
+import com.example.model.calculateStats
+import com.example.model.filterDrivers
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.freemarker.*
@@ -45,7 +47,7 @@ fun Application.configureRoutes() {
     }
 
     fun sendNotificationEmail(driver: Driver, subject: String, status: String) {
-        val to = arrayOf("julio.acostasilverio@walgreens.com", "") // Add more email addresses as needed
+        val to = arrayOf("julio.acostasilverio@walgreens.com,justin.roberts@walgreens.com,luis.baez@walgreens.com,jarred.bennettmoorer@walgreens.com,John.Botero@walgreens.com,frank.capaccio@walgreens.com,ian.earle@walgreens.com,matt.flaherty@walgreens.com,david.matthew.johnson@walgreens.com,anderson.oyola@walgreens.com,tuan.pham@walgreens.com,timothy.reardon@walgreens.com,duane.smith@walgreens.com,mark.arnold@walgreens.com,pablo.mendez@walgreens.com,robert.staniewicz@walgreens.com,desmond.ledford@walgreens.com") // Add more email addresses as needed
         val from = "julio.acostasilverio@walgreens.com"
         val host = "corpsmtp.walgreens.com"
 
@@ -67,7 +69,7 @@ fun Application.configureRoutes() {
 
 // Create the routing
     routing {
-
+    landingRoutes()
         // Route for the index page
         route("/") {
             // Get request for the index page
@@ -77,21 +79,25 @@ fun Application.configureRoutes() {
 
                 // Iterate through all drivers and check if their timestamp is older than 5 or 8 days
                 dao.getAllDrivers().forEach { driver ->
-                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                    val timestamp = LocalDateTime.parse(driver.timeStamp, formatter)
-                    val fiveDaysAgo = LocalDateTime.now().minusDays(5)
-                    val eightDaysAgo = LocalDateTime.now().minusDays(8)
+                    if (!driver.emailSent) { // Check if the email has already been sent
+                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                        val timestamp = LocalDateTime.parse(driver.timeStamp, formatter)
+                        val fiveDaysAgo = LocalDateTime.now().minusDays(5)
+                        val eightDaysAgo = LocalDateTime.now().minusDays(8)
 
-                    if (timestamp.isBefore(eightDaysAgo)) {
-                        // Send critical email
-                        sendNotificationEmail(
-                            driver,
-                            "Critical: Yard-test",
-                            "CRITICAL! Trailer has been in lot for 8 days "
-                        )
-                    } else if (timestamp.isBefore(fiveDaysAgo)) {
-                        // Send cautionary email
-                        sendNotificationEmail(driver, "Yard-test", "Trailer has reached 5 days in the lot.")
+                        if (timestamp.isBefore(eightDaysAgo)) {
+                            // Send critical email
+                            sendNotificationEmail(
+                                driver,
+                                "Critical: Yard-test",
+                                "CRITICAL! Trailer has been in lot for 8 days "
+                            )
+                            dao.updateEmailSent(driver.id) // Update the emailSent flag in the database
+                        } else if (timestamp.isBefore(fiveDaysAgo)) {
+                            // Send cautionary email
+                            sendNotificationEmail(driver, "Yard-test", "Trailer has reached 5 days in the lot.")
+                            dao.updateEmailSent(driver.id) // Update the emailSent flag in the database
+                        }
                     }
                 }
             }
@@ -222,15 +228,6 @@ fun Application.configureRoutes() {
             }
         }
 
-        route("/stats") {
-            get {
-                val stats = listOf(
-                    mapOf("fullTrailers" to 5, "emptyTrailers" to 3)
-                )
-                val model = mapOf("stats" to stats)
-                call.respond(FreeMarkerContent("stats.ftl", model))
-            }
-        }
         route("/search") {
             get {
                 val query = call.parameters["query"] ?: ""
@@ -246,10 +243,18 @@ fun Application.configureRoutes() {
                 call.respond(FreeMarkerContent("search.ftl", mapOf("drivers" to drivers)))
             }
         }
+        route("/stats"){
+            get {
+                val drivers = dao.getAllDrivers()
+                val  contentKeyWords = listOf("full", "empty", "full chep", "full blonde")
+                val containerKeyWords = listOf("yes", "no")
 
-
+                val filteredDrivers = filterDrivers(drivers, contentKeyWords, containerKeyWords)
+                val updateStats = calculateStats(filteredDrivers)
+                call.respond(FreeMarkerContent("stats.ftl", mapOf("stats" to listOf(updateStats))))
+            }
+        }
     }
-
 
 }
 

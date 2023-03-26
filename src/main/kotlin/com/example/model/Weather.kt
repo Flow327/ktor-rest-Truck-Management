@@ -5,18 +5,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WeatherResponse(
     val coord: Coord,
-    val weather: List<Weather>,
+    val weather: ArrayList<Weather>,
     val base: String,
     val main: Main,
-    val visibility: Int,
+    val visibility: Double,
     val wind: Wind,
     val clouds: Clouds,
-    val dt: Int,
+    val dt: Double,
     val sys: Sys,
-    val timezone: Int,
+    val timezone: Double,
     val id: Int,
     val name: String,
-    val cod: Int
+    val cod: Double,
 )
 
 @Serializable
@@ -62,5 +62,7 @@ data class Sys(
     val sunrise: Int,
     val sunset: Int
 )
+
+
 
 

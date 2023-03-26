@@ -78,6 +78,7 @@ fun Application.myApplicationModule() {
     dao.init()
 
     configureRoutes()
+
 // Install callLogging feature
     install(CallLogging) {
         level = Level.INFO

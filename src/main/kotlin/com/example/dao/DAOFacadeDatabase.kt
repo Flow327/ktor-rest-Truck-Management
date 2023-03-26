@@ -57,7 +57,8 @@ interface DAOFacade : Closeable {
             timeStamp = row[Drivers.timeStamp],
             updateStamp = row[Drivers.updateStamp] ?: "",
             usedParking = row[Drivers.usedParking],
-            usedDoors = row[Drivers.usedDoors]
+            usedDoors = row[Drivers.usedDoors],
+            emailSent = row[Drivers.emailSent]
         )
 
 
@@ -89,6 +90,9 @@ interface DAOFacade : Closeable {
     fun isDoorUsed(door: Int): Boolean
     // Function checks String in Search Bar
     fun searchDrivers(query: String): List<Driver>
+
+    // Function is for updated Email
+    fun updateEmailSent(id: Int)
 }
 // Class for the DAO Facade Database
 class DAOFacadeDatabase(val db: Database) : DAOFacade {
@@ -150,7 +154,8 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             it[Drivers.contents] = contents
             it[Drivers.container] = container
             it[Drivers.comments] = comments
-            it[Drivers.updateStamp] = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString()
+            it[Drivers.updateStamp] =
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString()
             it[Drivers.usedParking] = usedParking
             it[Drivers.usedDoors] = usedDoors
 
@@ -186,9 +191,10 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                 it[Drivers.container],
                 it[Drivers.comments],
                 it[Drivers.timeStamp],
-                it[Drivers.updateStamp] ?:"",
+                it[Drivers.updateStamp] ?: "",
                 it[Drivers.usedParking],
-                it[Drivers.usedDoors]
+                it[Drivers.usedDoors],
+                it[Drivers.emailSent]
             )
         }.singleOrNull()
         // Returns the driver or null
@@ -197,7 +203,7 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
     // Gets all drivers from the database
     override fun getAllDrivers() = transaction(db) {
         // Selects all drivers from the Drivers table
-        Drivers.selectAll().map {
+        val drivers = Drivers.selectAll().map {
             // Maps the drivers to Driver objects
             Driver(
                 it[Drivers.id],
@@ -209,12 +215,16 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                 it[Drivers.container],
                 it[Drivers.comments],
                 it[Drivers.timeStamp],
-                it[Drivers.updateStamp] ?:"",
+                it[Drivers.updateStamp] ?: "",
                 it[Drivers.usedParking],
-                it[Drivers.usedDoors]
+                it[Drivers.usedDoors],
+                it[Drivers.emailSent]
             )
         }
         // Returns the list of drivers
+        val sortedDrivers = drivers.sortedBy { it.parking }
+
+        return@transaction sortedDrivers
     }
 
     override fun getUnusedParkingNumbers(): List<Int> {
@@ -240,6 +250,7 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                 .map { it[Drivers.door] }
         }
     }
+
     override fun setDoorAsUnused(door: Int) {
         transaction {
             Drivers.update({ Drivers.door eq door }) {
@@ -250,16 +261,17 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
 
     override fun isParkingUsed(parking: Int): Boolean {
         return transaction {
-            Drivers.select {(Drivers.parking eq parking) and (Drivers.usedParking eq true)}.count() > 0
+            Drivers.select { (Drivers.parking eq parking) and (Drivers.usedParking eq true) }.count() > 0
         }
     }
 
     override fun isDoorUsed(door: Int): Boolean {
         return transaction {
-            Drivers.select { (Drivers.door eq door ) and (Drivers.usedDoors eq true) }.count() > 0
+            Drivers.select { (Drivers.door eq door) and (Drivers.usedDoors eq true) }.count() > 0
         }
 
     }
+
     // Function to search Drivers
     override fun searchDrivers(query: String): List<Driver> {
         val drivers = transaction(db) {
@@ -273,6 +285,14 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
         }
         println(drivers)
         return drivers
+    }
+
+    override fun updateEmailSent(id: Int) {
+        transaction(db) {
+            Drivers.update({ Drivers.id eq id }) {
+                it[emailSent] = true
+            }
+        }
     }
 
     // Closes the database

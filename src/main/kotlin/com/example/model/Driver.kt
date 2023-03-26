@@ -14,4 +14,5 @@ data class Driver(val id: Int,
                   val timeStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString(),
                   val updateStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString(),
                   val usedParking: Boolean,
-                  val usedDoors: Boolean)
+                  val usedDoors: Boolean,
+                  val emailSent: Boolean)

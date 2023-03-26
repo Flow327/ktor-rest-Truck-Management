@@ -41,6 +41,9 @@ object Drivers : Table() {
     // Declare an Integer variable called usedDoors
     val usedDoors = bool("usedDoors")
 
+    // Flag to check if Email was sent out
+    val emailSent = bool("emailSent").default(false)
+
     //Declare the primary key as the id variable
     override val primaryKey = PrimaryKey(id)
 }

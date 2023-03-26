@@ -5,7 +5,7 @@
 <head>
     <title>Trailer Status</title>
 </head>
-    <table class="table table-hover">
+<table class="table table-hover">
     <thead>
     <tr>
         <th scope="row">Full Trailers</th>
@@ -24,14 +24,14 @@
             <td>${st.fullTrailers}</td>
             <td>${st.emptyTrailers}</td>
             <td>${st.fullContainers}</td>
-            <td>${st.fullChep}</td>
-            <td>${st.fullBlonde}</td>
-            <td>${st.numberOfTrailers}</td>
-            <td>${st.Occupied}</td>
+            <td>${st.emptyContainers}</td>
+            <td>${st.fullChepTrailers}</td>
+            <td>${st.fullBlondeTrailers}</td>
+            <td>${st.totalTrailers}</td>
             <td>
                 <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-                        <span>75%</span>
+                    <div class="progress-bar" role="progressbar" style="width: ${st.percentageOccupied}%" aria-valuenow="${st.percentageOccupied}" aria-valuemin="0" aria-valuemax="100">
+                        <span>${st.percentageOccupied}%</span>
                     </div>
                 </div>
             </td>
