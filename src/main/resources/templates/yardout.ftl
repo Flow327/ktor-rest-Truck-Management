@@ -1,21 +1,17 @@
 <#import "template.ftl" as layout />
 <@layout.mainLayout>
-<!doctype html>
-<html lang="en">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         .btn {
             width: 100px;
             text-align: center;
         }
         .table-hover {
-             width: 100% !important;
+            width: 100% !important;
             height: max-content !important;
-         }
+        }
 
         th, td {
-             /* center the content of all table cells */
+            /* center the content of all table cells */
             vertical-align: middle; !important;/* vertically center the content of all table cells */
             padding: 10px !important;
             text-align: center !important;
@@ -24,34 +20,9 @@
             height: 15px !important; /* adjust this value to set the desired height of the table header row */
             padding: 0; /* remove the default padding from the table header cells */
         }
-
-        .btn-danger {
-            width: 6rem;
-        }
-
-        .btn-secondary {
-            width: 5rem;
-        }
-
-        .dropdown-toggle-split {
-            width: 1rem;
-        }
-        .dropdown-menu {
-            background-color: deepskyblue;
-            white-space: nowrap;
-            padding: 0;
-            width: 50%;
-        }
-        .dropdown-item {
-            border: 1px solid yellow;
-            padding: 5px 5px;
-            text-align: center;
-        }
-        .dropdown-item:hover {
-            background-color: deepskyblue;
-        }
     </style>
     <table class="table table-hover">
+        <caption style="caption-side: top; font-weight: bold;">YARD OUT TABLE</caption>
         <thead>
         <tr>
             <th scope="col">Id</th>
@@ -67,7 +38,7 @@
         </tr>
         </thead>
         <tbody>
-        <#list drivers as drv>
+        <#list yardOutDrivers as drv>
             <tr>
                 <td>${drv.id}</td>
                 <td>${drv.name}</td>
@@ -79,27 +50,12 @@
                 <td>${drv.timeStamp}</td>
                 <td>${drv.updateStamp}</td>
                 <td>
-                    <div class="btn-group">
-                        <a href="/driver?action=edit&id=${drv.id}" class="btn btn-secondary" role="button">Edit</a>
-                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <form action="/yardout?action=yardout" method="post">
-                                    <input type="hidden" name="id" value="${drv.id}">
-                                    <button type="submit" class="dropdown-item">Yard Out</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
+                    <a href="/return?id=${drv.id}" class="btn btn-danger" role="button">Return</a>
                     <a href="/delete?id=${drv.id}" class="btn btn-danger" role="button">Del</a>
                 </td>
             </tr>
         </#list>
         </tbody>
     </table>
-</html>
+    </html>
 </@layout.mainLayout>
-
-

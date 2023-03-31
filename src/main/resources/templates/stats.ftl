@@ -5,6 +5,12 @@
 <head>
     <title>Trailer Status</title>
 </head>
+<style>
+    td {
+        text-align: center;
+        padding: 10%;
+    }
+</style>
 <table class="table table-hover">
     <thead>
     <tr>

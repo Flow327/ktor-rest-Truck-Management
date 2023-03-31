@@ -20,6 +20,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.freemarker.*
+import io.ktor.server.http.content.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.statuspages.*
@@ -78,6 +79,7 @@ fun Application.myApplicationModule() {
     dao.init()
 
     configureRoutes()
+
 
 // Install callLogging feature
     install(CallLogging) {

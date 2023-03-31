@@ -32,6 +32,7 @@ repositories {
 dependencies {
     implementation("com.microsoft.sqlserver:mssql-jdbc:12.2.0.jre8")
     implementation("io.ktor:ktor-server-core-jvm:2.2.4")
+    implementation("joda-time:joda-time:2.12.2")
     implementation("com.h2database:h2:$h2_version")
     implementation("io.ktor:ktor-server-websockets-jvm:2.2.4")
     implementation("io.ktor:ktor-client-content-negotiation-jvm:2.2.3")
@@ -44,6 +45,8 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm:2.2.4")
     implementation("io.ktor:ktor-server-websockets:2.2.4")
     implementation("io.ktor:ktor-server-freemarker:2.2.4")
+    implementation("org.freemarker:freemarker:2.3.32")
+    implementation("io.ktor:ktor-freemarker:1.6.8")
     implementation("io.ktor:ktor-server-call-logging-jvm:2.2.4")
     implementation("io.ktor:ktor-server-netty-jvm:2.2.4")
     implementation("io.ktor:ktor-client-cio-jvm:2.2.4")
@@ -62,6 +65,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:2.2.4")
+    implementation("io.ktor:ktor-server-webjars:$ktor_version")
 
 
 }

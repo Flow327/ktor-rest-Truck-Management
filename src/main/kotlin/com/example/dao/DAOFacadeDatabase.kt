@@ -93,13 +93,21 @@ interface DAOFacade : Closeable {
 
     // Function is for updated Email
     fun updateEmailSent(id: Int)
+
+    fun moveRowToYardOut(id: Int)
+
+
+    // Function to move Drivers to Yard out Table
+    fun getAllYardOutDrivers(): List<Driver>
+
+    fun getYardOutDriverById(id: Int):Driver
 }
 // Class for the DAO Facade Database
 class DAOFacadeDatabase(val db: Database) : DAOFacade {
     // Initializes the database
     override fun init() = transaction(db) {
-        //SchemaUtils.drop(Drivers)
-        //SchemaUtils.create(Drivers)
+        //SchemaUtils.drop(Drivers, YardOut)
+        SchemaUtils.create(Drivers, YardOut)
     }
 
     // Creates a driver in the database
@@ -295,8 +303,75 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
         }
     }
 
-    // Closes the database
-    override fun close() {
+    override fun moveRowToYardOut(id: Int) {
+        transaction(db) {
+            val driver = Drivers.select { Drivers.id eq id }.singleOrNull()
+            driver?.let { row ->
+                YardOut.insert {
+                    it[name] = row[Drivers.name]
+                    it[parking] = row[Drivers.parking]
+                    it[door] = row[Drivers.door]
+                    it[truckNumber] = row[Drivers.truckNumber]
+                    it[contents] = row[Drivers.contents]
+                    it[container] = row[Drivers.container]
+                    it[comments] = row[Drivers.comments]
+                    it[timeStamp] = row[Drivers.timeStamp]
+                    it[updateStamp] = row[Drivers.updateStamp]
+                }
+                Drivers.deleteWhere { Drivers.id eq id }
+            }
+        }
     }
 
+
+    // In your DAOFacadeDatabase implementation
+    override fun getAllYardOutDrivers(): List<Driver> = transaction(db) {
+        YardOut.selectAll().map {
+            Driver(
+                id = it[YardOut.id],
+                name = it[YardOut.name],
+                parking = it[YardOut.parking],
+                door = it[YardOut.door],
+                truckNumber = it[YardOut.truckNumber],
+                contents = it[YardOut.contents],
+                container = it[YardOut.container],
+                comments = it[YardOut.comments],
+                timeStamp = it[YardOut.timeStamp],
+                updateStamp = it[YardOut.updateStamp] ?: "",
+                emailSent = it[YardOut.emailSent],
+                usedParking = false,
+                usedDoors = false
+            )
+        }
+    }
+
+    override fun getYardOutDriverById(id: Int): Driver = transaction(db) {
+        YardOut.select { YardOut.id eq id }.map {
+            Driver(
+                id = it[YardOut.id],
+                name = it[YardOut.name],
+                parking = it[YardOut.parking],
+                door = it[YardOut.door],
+                truckNumber = it[YardOut.truckNumber],
+                contents = it[YardOut.contents],
+                container = it[YardOut.container],
+                comments = it[YardOut.comments],
+                timeStamp = it[YardOut.timeStamp],
+                updateStamp = it[YardOut.updateStamp] ?: "",
+                emailSent = it[YardOut.emailSent],
+                usedParking = false,
+                usedDoors = false
+            )
+
+        }.single()
+    }
+
+
+    // Closes the database
+    override fun close() {
+
+    }
 }
+
+
+

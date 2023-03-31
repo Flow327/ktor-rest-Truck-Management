@@ -47,7 +47,8 @@ fun Application.configureRoutes() {
     }
 
     fun sendNotificationEmail(driver: Driver, subject: String, status: String) {
-        val to = arrayOf("julio.acostasilverio@walgreens.com,justin.roberts@walgreens.com,luis.baez@walgreens.com,jarred.bennettmoorer@walgreens.com,John.Botero@walgreens.com,frank.capaccio@walgreens.com,ian.earle@walgreens.com,matt.flaherty@walgreens.com,david.matthew.johnson@walgreens.com,anderson.oyola@walgreens.com,tuan.pham@walgreens.com,timothy.reardon@walgreens.com,duane.smith@walgreens.com,mark.arnold@walgreens.com,pablo.mendez@walgreens.com,robert.staniewicz@walgreens.com,desmond.ledford@walgreens.com") // Add more email addresses as needed
+        val to =
+            arrayOf("julio.acostasilverio@walgreens.com,justin.roberts@walgreens.com,luis.baez@walgreens.com,jarred.bennettmoorer@walgreens.com,John.Botero@walgreens.com,frank.capaccio@walgreens.com,ian.earle@walgreens.com,matt.flaherty@walgreens.com,david.matthew.johnson@walgreens.com,anderson.oyola@walgreens.com,tuan.pham@walgreens.com,timothy.reardon@walgreens.com,duane.smith@walgreens.com,mark.arnold@walgreens.com,pablo.mendez@walgreens.com,robert.staniewicz@walgreens.com,desmond.ledford@walgreens.com") // Add more email addresses as needed
         val from = "julio.acostasilverio@walgreens.com"
         val host = "corpsmtp.walgreens.com"
 
@@ -69,7 +70,10 @@ fun Application.configureRoutes() {
 
 // Create the routing
     routing {
-    landingRoutes()
+        landingRoutes()
+        YardOutRoute()
+        returnDriverRoute()
+        yardOutDisplayRoute()
         // Route for the index page
         route("/") {
             // Get request for the index page
@@ -114,7 +118,11 @@ fun Application.configureRoutes() {
                     "new" -> call.respond(
                         FreeMarkerContent(
                             "driver.ftl",
-                            mapOf("action" to action, "parkingNumbers" to generateParkingNumbers(), "doorNumbers" to generateDoorNumbers())
+                            mapOf(
+                                "action" to action,
+                                "parkingNumbers" to generateParkingNumbers(),
+                                "doorNumbers" to generateDoorNumbers()
+                            )
                         )
                     )
 
@@ -129,7 +137,8 @@ fun Application.configureRoutes() {
                                     mapOf(
                                         "driver" to dao.getDriver(id.toInt()),
                                         "action" to action,
-                                        "parkingNumbers" to generateParkingNumbers(), "doorNumbers" to generateDoorNumbers()
+                                        "parkingNumbers" to generateParkingNumbers(),
+                                        "doorNumbers" to generateDoorNumbers()
                                     )
                                 )
                             )
@@ -159,7 +168,7 @@ fun Application.configureRoutes() {
 
                     "edit" -> {
                         val id = postParameters["id"]
-                        if (id != null){
+                        if (id != null) {
                             val existingDriver = dao.getDriver(id.toInt())
                             val newParking = postParameters["parking"]?.toInt() ?: 0
                             val newDoor = postParameters["door"]?.toInt() ?: 0
@@ -196,24 +205,32 @@ fun Application.configureRoutes() {
             println("delete block")
             // Get request for the delete page
             get {
-                // Get the id from the query parameters
+                // Get the id and table from the query parameters
                 val id = call.request.queryParameters["id"]
+                val table = call.request.queryParameters["table"]
                 // If the id is not null, delete the driver
                 if (id != null) {
-                    val driver = dao.getDriver(id.toInt())
-                    dao.deleteDriver(id.toInt())
-                    if (driver != null) {
-                        dao.setParkingAsUnused(driver.parking)
-                        dao.setDoorAsUnused(driver.door)
-                    }
-                    // Respond with the FreeMarker template and the list of drivers
-                    call.respond(
-                        FreeMarkerContent(
-                            "index.ftl",
-                            mapOf("drivers" to dao.getAllDrivers())
-                        )
-                    )
+                    when (table) {
+                        "drivers" -> {
+                            val driver = dao.getDriver(id.toInt())
+                            dao.deleteDriver(id.toInt())
+                            if (driver != null) {
+                                dao.setParkingAsUnused(driver.parking)
+                                dao.setDoorAsUnused(driver.door)
+                            }
+                            call.respond(
+                                FreeMarkerContent(
+                                    "index.ftl",
+                                    mapOf("drivers" to dao.getAllDrivers())
+                                )
+                            )
+                        }
 
+                        "yardout" -> {
+                            dao.deleteDriver(id.toInt())
+                            call.respondRedirect("/yardout?deleted=true")
+                        }
+                    }
                 }
             }
         }
@@ -243,10 +260,10 @@ fun Application.configureRoutes() {
                 call.respond(FreeMarkerContent("search.ftl", mapOf("drivers" to drivers)))
             }
         }
-        route("/stats"){
+        route("/stats") {
             get {
                 val drivers = dao.getAllDrivers()
-                val  contentKeyWords = listOf("full", "empty", "full chep", "full blonde")
+                val contentKeyWords = listOf("full", "empty", "full chep", "full blonde")
                 val containerKeyWords = listOf("yes", "no")
 
                 val filteredDrivers = filterDrivers(drivers, contentKeyWords, containerKeyWords)
@@ -255,6 +272,13 @@ fun Application.configureRoutes() {
             }
         }
     }
-
 }
+
+
+
+
+
+
+
+
 

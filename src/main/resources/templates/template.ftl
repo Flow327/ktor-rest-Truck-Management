@@ -1,22 +1,66 @@
 <#macro mainLayout title="Welcome to Yard Management Database">
     <!doctype html>
-    <html lang="en" xmlns="http://www.w3.org/1999/html">
+    <html lang="en">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>${title}</title>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <!--bootstrap CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-              crossorigin="anonymous">
+        <!-- Vanilla Datepicker CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.1/dist/css/datepicker.min.css">
+
+        <!-- Vanilla Datepicker JS -->
+        <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.1/dist/js/datepicker-full.min.js"></script>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
+
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+
+        <!-- Popper JS -->
+        <script src="https://unpkg.com/@popperjs/core@2"></script>
+
+        <!-- Bootstrap JavaScript -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js" integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD" crossorigin="anonymous"></script>
+
+        <!-- Bundled Bootstrap -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    </head>
+        <style>
+            #search-form {
+                position: absolute;
+                right: 0;
+            }
+        </style>
+        <style>
+            .custom-container {
+                max-width: 1250px;
+
+            }
+        </style>
+        <style>
+            .search-button {
+                height: 38px;
+                border-color: #000000;
+                color: #000000;
+            }
+        </style>
+    <style>
+        #inline-datepicker {
+            width: auto !important;
+            display: block !important;
+            margin: 0 auto !important;
+
+        }
+    </style>
     <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Yard Management</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
@@ -29,27 +73,73 @@
                         <a class="nav-link active" href="/weather">Weather</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="/" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="/">Action</a>
-                            <a class="dropdown-item" href="/">Another action</a>
-                            <a class="dropdown-item" href="/">Something else here</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/">Separated link</a>
+                        <button id="calendar" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" data-bs-target="#calendarModal" aria-expanded="false">
+                            Calendar
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="/yardout">Yard Out Table</a></li>
+                        </ul>
+                        <div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-sm">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5 text-center" id="calendarModalLabel">Yard out Calendar</h1>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="inline-datepicker">
+                                    </div>
+                                </div>
+                                    <div class="modal-footer">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </li>
                 </ul>
-                <form id="search-form" class="d-flex" action=/search method="post">
+                <form id="search-form" class="d-flex " action=/search method="post">
                     <label>
                         <input class="form-control me-sm-2" type="search" name="query" placeholder="Search">
                     </label>
-                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                    <button class="btn btn-outline-success my-2 my-sm-0 search-button" type="submit">Search</button>
                 </form>
             </div>
         </div>
     </nav>
+    <script>
+        var dropdownButton = document.querySelector('[data-bs-toggle="dropdown"]');
+        var dropdownMenu = document.querySelector('.dropdown-menu');
+
+        dropdownButton.addEventListener('click', function () {
+            if (dropdownMenu.classList.contains('show')) {
+                dropdownMenu.classList.remove('show');
+            } else {
+                dropdownMenu.classList.add('show');
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('.dropdown')) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    </script>
+    <script>
+        var calendarModal = document.getElementById('calendarModal')
+        var myButton = document.querySelector('[data-bs-target="#calendarModal"]')
+        myButton.addEventListener('click', function () {
+            var modal = new bootstrap.Modal(calendarModal)
+            modal.show()
+        })
+    </script>
+    <script>
+        const elem = document.querySelector('#inline-datepicker');
+        const datepicker = new Datepicker(elem, {
+            // options here
+            inline: true
+        });
+    </script>
     </body>
-    <div class="container">
+    <div class="container custom-container">
         <div class="row m-1">
             <div class="row m-1">
                 <#nested/>
@@ -58,3 +148,5 @@
     </div>
     </html>
 </#macro>
+
+
