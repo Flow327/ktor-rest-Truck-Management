@@ -72,13 +72,15 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="/weather">Weather</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <button id="calendar" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" data-bs-target="#calendarModal" aria-expanded="false">
-                            Calendar
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" href="/yardout">Yard Out Table</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a id="calendar" class="nav-link active" data-bs-target="#calendarModal" aria-expanded="false">Calendar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/parkingLot">Parking Lot</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/doorNumber">Door Numbers</a>
+                    </li>
                         <div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-sm">
                                 <div class="modal-content">
@@ -90,6 +92,7 @@
                                     </div>
                                 </div>
                                     <div class="modal-footer">
+                                        <a class="btn btn-secondary" role="button" href="/yardout">Yard Out Table</a>
                                     </div>
                                 </div>
                             </div>
@@ -105,24 +108,6 @@
             </div>
         </div>
     </nav>
-    <script>
-        var dropdownButton = document.querySelector('[data-bs-toggle="dropdown"]');
-        var dropdownMenu = document.querySelector('.dropdown-menu');
-
-        dropdownButton.addEventListener('click', function () {
-            if (dropdownMenu.classList.contains('show')) {
-                dropdownMenu.classList.remove('show');
-            } else {
-                dropdownMenu.classList.add('show');
-            }
-        });
-
-        document.addEventListener('click', function (event) {
-            if (!event.target.closest('.dropdown')) {
-                dropdownMenu.classList.remove('show');
-            }
-        });
-    </script>
     <script>
         var calendarModal = document.getElementById('calendarModal')
         var myButton = document.querySelector('[data-bs-target="#calendarModal"]')

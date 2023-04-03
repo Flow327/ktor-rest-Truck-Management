@@ -8,7 +8,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.YardOutRoute() {
+fun Route.yardOutRoute() {
     route("/yardout") {
         post {
             val postParameters: Parameters = call.receiveParameters()
@@ -23,9 +23,29 @@ fun Route.YardOutRoute() {
                     }
                 }
             }
-            // Redirect to the appropriate page after processing the form submission
             call.respondRedirect("/")
         }
+    }
+}
+fun Route.deleteYardOutDriverRoute() {
+    get("/deleteyard") {
+        val queryParameters = call.request.queryParameters
+        when (queryParameters["action"]) {
+            "delete" -> {
+                val id = queryParameters["id"]?.toIntOrNull()
+                if (id != null) {
+                    // Delete the yard out driver with the given ID
+                    dao.deleteYardOutDriver(id)
+                }
+            }
+        }
+        // Respond with the FreeMarker template and the list of drivers
+        call.respond(
+            FreeMarkerContent(
+                "yardout.ftl",
+                mapOf("yardOutDrivers" to dao.getAllYardOutDrivers()
+                )
+            ))
     }
 }
         fun Route.returnDriverRoute() {
@@ -46,9 +66,10 @@ fun Route.YardOutRoute() {
                         comments = yardOutDriver.comments,
                         timeStamp = yardOutDriver.timeStamp,
                         updateStamp = yardOutDriver.updateStamp ?: "",
-                        usedDoors = false,
-                        usedParking = false
+                        usedDoors = yardOutDriver.usedDoors,
+                        usedParking = yardOutDriver.usedParking
                     )
+                    dao.deleteYardOutDriver(yardOutDriverId)
                 }
                 call.respondRedirect("/yardout")
             }

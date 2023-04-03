@@ -92,7 +92,6 @@ fun Application.myApplicationModule() {
         templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
     }
 
-
 }
 
 

@@ -34,6 +34,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm:2.2.4")
     implementation("joda-time:joda-time:2.12.2")
     implementation("com.h2database:h2:$h2_version")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.2.4")
     implementation("io.ktor:ktor-server-websockets-jvm:2.2.4")
     implementation("io.ktor:ktor-client-content-negotiation-jvm:2.2.3")
     implementation("com.beust:klaxon:5.5")

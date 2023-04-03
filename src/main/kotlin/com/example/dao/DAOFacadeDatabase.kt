@@ -61,6 +61,8 @@ interface DAOFacade : Closeable {
             emailSent = row[Drivers.emailSent]
         )
 
+    // Delete a driver from Yardout
+    fun deleteYardOutDriver(id:Int)
 
     // Deletes a driver from the database
     fun deleteDriver(id: Int)
@@ -106,7 +108,7 @@ interface DAOFacade : Closeable {
 class DAOFacadeDatabase(val db: Database) : DAOFacade {
     // Initializes the database
     override fun init() = transaction(db) {
-        //SchemaUtils.drop(Drivers, YardOut)
+       //SchemaUtils.drop(Drivers, YardOut)
         SchemaUtils.create(Drivers, YardOut)
     }
 
@@ -180,6 +182,13 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             Drivers.id eq id
         }
         // Returns Unit
+        Unit
+    }
+
+    override fun deleteYardOutDriver(id: Int) = transaction(db) {
+        YardOut.deleteWhere {
+            YardOut.id eq id
+        }
         Unit
     }
 
@@ -317,6 +326,8 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                     it[comments] = row[Drivers.comments]
                     it[timeStamp] = row[Drivers.timeStamp]
                     it[updateStamp] = row[Drivers.updateStamp]
+                    it[usedParking] = row[Drivers.usedParking]
+                    it[usedDoors] = row[Drivers.usedDoors]
                 }
                 Drivers.deleteWhere { Drivers.id eq id }
             }
@@ -339,8 +350,8 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                 timeStamp = it[YardOut.timeStamp],
                 updateStamp = it[YardOut.updateStamp] ?: "",
                 emailSent = it[YardOut.emailSent],
-                usedParking = false,
-                usedDoors = false
+                usedParking = it[YardOut.usedParking],
+                usedDoors = it[YardOut.usedParking]
             )
         }
     }
@@ -359,8 +370,8 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                 timeStamp = it[YardOut.timeStamp],
                 updateStamp = it[YardOut.updateStamp] ?: "",
                 emailSent = it[YardOut.emailSent],
-                usedParking = false,
-                usedDoors = false
+                usedParking = it[YardOut.usedParking],
+                usedDoors = it[YardOut.usedDoors]
             )
 
         }.single()

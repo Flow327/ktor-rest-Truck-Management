@@ -50,8 +50,8 @@
                 <td>${drv.timeStamp}</td>
                 <td>${drv.updateStamp}</td>
                 <td>
-                    <a href="/return?id=${drv.id}" class="btn btn-danger" role="button">Return</a>
-                    <a href="/delete?id=${drv.id}" class="btn btn-danger" role="button">Del</a>
+                    <a href="/return?id=${drv.id}" type="button" class="btn btn-primary">Return</a>
+                    <a href="/deleteyard?action=delete&id=${drv.id}" class="btn btn-danger" role="button">Del</a>
                 </td>
             </tr>
         </#list>

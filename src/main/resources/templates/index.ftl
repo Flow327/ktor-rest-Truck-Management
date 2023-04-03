@@ -93,7 +93,7 @@
                             </li>
                         </ul>
                     </div>
-                    <a href="/delete?id=${drv.id}" class="btn btn-danger" role="button">Del</a>
+                    <a href="/deleteDriver?action=delete&id=${drv.id}" class="btn btn-danger" role="button">Delete</a>
                 </td>
             </tr>
         </#list>

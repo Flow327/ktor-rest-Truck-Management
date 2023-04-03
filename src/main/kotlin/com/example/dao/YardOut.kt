@@ -15,6 +15,8 @@ object YardOut : Table() {
     val comments: Column<String> = varchar("comments", 100)
     val timeStamp: Column<String> = varchar("timeStamp", 250)
     val updateStamp: Column<String?> = varchar("updateStamp", 250).nullable()
+    val usedParking =bool("usedParking").default(false)
+    val usedDoors =bool("usedDoors").default(false)
     val emailSent = bool("emailSent").default(false)
 
     override val primaryKey = PrimaryKey(Drivers.id)
