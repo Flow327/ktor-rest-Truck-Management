@@ -8,8 +8,8 @@
         </div>
         <div class="form-group">
             <label for="parking">Parking Or Door</label>
-            <select type="text" class="form-control" id="parking"  name="parking" placeholder="Select Parking number"
-                    value="${(driver.parking)!}">
+            <select type="text" class="form-control" id="parking" name="parking">
+                <option value="" disabled selected> Current Number ${(driver.parking)!}</option>
                 <optgroup label="Parking Numbers">
                     <#list parkingNumbers as number>
                         <option value="${number}" <#if (driver.parking)!?string != "" && (driver.parking)!?number == number>selected</#if>>Parking Number ${number}</option>
@@ -19,7 +19,7 @@
                     <#list doorNumbers as number>
                         <option value="${number}" <#if (driver.door)!?string != "" && (driver.door)!?number == number>selected</#if>>Door Number ${number}</option>
                     </#list>
-                    </optgroup>
+                </optgroup>
             </select>
         </div>
         <div class="form-group">

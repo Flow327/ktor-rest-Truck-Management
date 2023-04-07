@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.io.Closeable
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -103,6 +104,12 @@ interface DAOFacade : Closeable {
     fun getAllYardOutDrivers(): List<Driver>
 
     fun getYardOutDriverById(id: Int):Driver
+
+    fun getYardOutDriversByDate(date:LocalDate): List<Driver>
+
+    fun getDatesWithYardOutDrivers(): List<LocalDate>
+
+
 }
 // Class for the DAO Facade Database
 class DAOFacadeDatabase(val db: Database) : DAOFacade {
@@ -328,6 +335,7 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                     it[updateStamp] = row[Drivers.updateStamp]
                     it[usedParking] = row[Drivers.usedParking]
                     it[usedDoors] = row[Drivers.usedDoors]
+                    it[yardOutDate] = LocalDate.now().toString()
                 }
                 Drivers.deleteWhere { Drivers.id eq id }
             }
@@ -351,7 +359,7 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                 updateStamp = it[YardOut.updateStamp] ?: "",
                 emailSent = it[YardOut.emailSent],
                 usedParking = it[YardOut.usedParking],
-                usedDoors = it[YardOut.usedParking]
+                usedDoors = it[YardOut.usedParking],
             )
         }
     }
@@ -371,11 +379,41 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                 updateStamp = it[YardOut.updateStamp] ?: "",
                 emailSent = it[YardOut.emailSent],
                 usedParking = it[YardOut.usedParking],
-                usedDoors = it[YardOut.usedDoors]
+                usedDoors = it[YardOut.usedDoors],
+
             )
 
         }.single()
     }
+    override fun getYardOutDriversByDate(date:LocalDate): List<Driver> = transaction(db) {
+        YardOut.select { YardOut.yardOutDate eq date.toString() }
+            .map {
+                Driver(
+                    id = it[YardOut.id],
+                    name = it[YardOut.name],
+                    parking = it[YardOut.parking],
+                    door = it[YardOut.door],
+                    truckNumber = it[YardOut.truckNumber],
+                    contents = it[YardOut.contents],
+                    container = it[YardOut.container],
+                    comments = it[YardOut.comments],
+                    timeStamp = it[YardOut.timeStamp],
+                    updateStamp = it[YardOut.updateStamp] ?: "",
+                    emailSent = it[YardOut.emailSent],
+                    usedParking = it[YardOut.usedParking],
+                    usedDoors = it[YardOut.usedDoors],
+                )
+            }
+    }
+
+    override fun getDatesWithYardOutDrivers(): List<LocalDate> = transaction(db) {
+        YardOut.slice(YardOut.yardOutDate)
+            .select { YardOut.yardOutDate.isNotNull() }
+            .distinct()
+            .map { LocalDate.parse(it[YardOut.yardOutDate]) }
+    }
+
+
 
 
     // Closes the database

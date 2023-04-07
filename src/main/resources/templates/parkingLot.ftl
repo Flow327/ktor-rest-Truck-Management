@@ -35,6 +35,14 @@
         tr {
             margin-bottom: 10px;
         }
+        .fire-lane {
+            background-color: #ffaaaa;
+        }
+
+        .rally-point {
+            background-color: #aaffaa;
+        }
+
     </style>
 </head>
     <body>
@@ -50,14 +58,22 @@
                     <#if lotNumber <= 314>
                         <#assign isUsed = false>
                         <#assign truckNumber = "">
+                        <#assign isFireLane = lotNumber == 237>
+                        <#assign isRallyPoint = (lotNumber >= 274 && lotNumber <= 279)?then(true, false)>
                         <#list drivers as driver>
                             <#if driver.parking == lotNumber>
                                 <#assign isUsed = true>
                                 <#assign truckNumber = driver.truckNumber>
                             </#if>
                         </#list>
-                        <td <#if isUsed>class="occupied"</#if>>
-                            Yard Lane: ${lotNumber} <br> <#if isUsed>Truck Number: ${truckNumber}</#if>
+                        <td <#if isUsed>class="occupied"<#elseif isFireLane>class="fire-lane"<#elseif isRallyPoint>class="rally-point"</#if>>
+                            <#if isFireLane>
+                                Fire Lane
+                            <#elseif isRallyPoint>
+                                Rally Point: ${lotNumber}
+                            <#else>
+                                Yard Lane: ${lotNumber} <br> <#if isUsed>Truck Number: ${truckNumber}</#if>
+                            </#if>
                         </td>
                     </#if>
                 </#list>
@@ -65,6 +81,7 @@
             <tr style="height: 15px;"></tr>
         </#list>
     </table>
-</body>
+
+    </body>
 </html>
 </@layout.mainLayout>

@@ -26,12 +26,14 @@ fun Route.newDriverRoute() {
         val minParkingNumber = 216
         val maxParkingNumber = 314
         val fireLane = 237
+        val rallyPoints = listOf(274..279)
 
         // get DAO to get the list of unused parking numbers
         val unusedParkingNumber = dao.getUnusedParkingNumbers()
 
         // generate the list of all parking numbers and filter them based on whether they are in the list of unused parking numbers
-        return (minParkingNumber..maxParkingNumber).filter { it !in unusedParkingNumber && it != fireLane }
+        return (minParkingNumber..maxParkingNumber).filter { it !in unusedParkingNumber && it != fireLane && it !in rallyPoints.first() }
+
     }
 
     get("/driver") {

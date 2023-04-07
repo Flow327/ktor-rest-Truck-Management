@@ -7,6 +7,11 @@ import io.ktor.server.freemarker.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 fun Route.yardOutRoute() {
     route("/yardout") {
@@ -81,6 +86,59 @@ fun Route.yardOutDisplayRoute() {
         call.respond(FreeMarkerContent("yardout.ftl", mapOf("yardOutDrivers" to yardOutDrivers)))
     }
 }
+fun getDayOfMonthSuffix(day: Int): String {
+    return when (day % 10) {
+        1 -> if (day != 11) "st" else "th"
+        2 -> if (day != 12) "nd" else "th"
+        3 -> if (day != 13) "rd" else "th"
+        else -> "th"
+    }
+}
+fun Route.yardOutByDateRoute() {
+    get("/day") {
+        val dateString = call.request.queryParameters["date"]
+        if (dateString != null) {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val date = LocalDate.parse(dateString, formatter)
+            val driversByDate = dao.getYardOutDriversByDate(date)
+
+            // Convert the date to "April 7th 2023" format for display
+            val monthFormatter = DateTimeFormatter.ofPattern("MMMM")
+            val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
+            val daySuffix = getDayOfMonthSuffix(date.dayOfMonth)
+            val formattedDate = "${monthFormatter.format(date)} ${date.dayOfMonth}$daySuffix ${yearFormatter.format(date)}"
+
+            call.respond(FreeMarkerContent("day.ftl", mapOf("yardOutDrivers" to driversByDate, "formattedDate" to formattedDate))) // pass the driversByDate to the template
+        } else {
+            call.respond(HttpStatusCode.BadRequest, "Missing date parameter.")
+        }
+    }
+}
+
+fun Route.datesWithRecordsRoute() {
+    get("/dates-with-records") {
+        val datesWithRecords = dao.getDatesWithYardOutDrivers()
+        call.respondText(contentType = ContentType.Application.Json) {
+            Json.encodeToString(ListSerializer(String.serializer()), datesWithRecords.map { it.toString() })
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

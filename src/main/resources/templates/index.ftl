@@ -1,9 +1,5 @@
 <#import "template.ftl" as layout />
 <@layout.mainLayout>
-<!doctype html>
-<html lang="en">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         .btn {
             width: 100px;
@@ -99,7 +95,6 @@
         </#list>
         </tbody>
     </table>
-</html>
 </@layout.mainLayout>
 
 

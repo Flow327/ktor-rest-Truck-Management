@@ -56,6 +56,10 @@
             margin: 0 auto !important;
 
         }
+        .date-with-record {
+            background-color: lightblue;
+        }
+
     </style>
     <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -81,22 +85,22 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="/doorNumber">Door Numbers</a>
                     </li>
-                        <div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-sm">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5 text-center" id="calendarModalLabel">Yard out Calendar</h1>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div id="inline-datepicker">
+                    <div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-sm">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5 text-center" id="calendarModalLabel">Yard out Calendar</h1>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="inline-datepicker">
                                     </div>
                                 </div>
-                                    <div class="modal-footer">
-                                        <a class="btn btn-secondary" role="button" href="/yardout">Yard Out Table</a>
-                                    </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-secondary" role="button" href="/yardout">Yard Out Table</a>
                                 </div>
                             </div>
                         </div>
+                    </div>
                     </li>
                 </ul>
                 <form id="search-form" class="d-flex " action=/search method="post">
@@ -109,20 +113,60 @@
         </div>
     </nav>
     <script>
-        var calendarModal = document.getElementById('calendarModal')
-        var myButton = document.querySelector('[data-bs-target="#calendarModal"]')
+        async function fetchDatesWithRecords() {
+            const response = await fetch('/dates-with-records');
+            const data = await response.json();
+            return data.map(dateString => new Date(dateString));
+        }
+
+        fetchDatesWithRecords().then(dates => {
+            datesWithRecords = dates;
+
+            new Datepicker(elem, {
+                // options here
+                inline: true,
+                beforeShowDay: (date) => {
+                    const hasRecord = datesWithRecords.some(
+                        recordDate => recordDate.toISOString().split('T')[0] === date.toISOString().split('T')[0]
+                    );
+
+                    return { enabled: true, classes: hasRecord ? 'date-with-record' : '' };
+                }
+            });
+        });
+
+        (async function setupCalendar() {
+            const datesWithRecords = await fetchDatesWithRecords();
+
+            const elem = document.querySelector('#inline-datepicker');
+            new Datepicker(elem, {
+                // options here
+                inline: true,
+                beforeShowDay: (date) => {
+                    const hasRecord = datesWithRecords.some(
+                        recordDate => recordDate.toISOString().split('T')[0] === date.toISOString().split('T')[0]
+                    );
+
+                    return { enabled: true, classes: hasRecord ? 'date-with-record' : '' };
+                }
+            });
+
+
+            elem.addEventListener('changeDate', function (e) {
+                const selectedDate = e.detail.date;
+                const formattedDate = selectedDate.toISOString().split('T')[0];
+                window.location.href = '/day?date=' + formattedDate;
+            });
+        })();
+
+        var calendarModal = document.getElementById('calendarModal');
+        var myButton = document.querySelector('[data-bs-target="#calendarModal"]');
         myButton.addEventListener('click', function () {
-            var modal = new bootstrap.Modal(calendarModal)
-            modal.show()
-        })
-    </script>
-    <script>
-        const elem = document.querySelector('#inline-datepicker');
-        const datepicker = new Datepicker(elem, {
-            // options here
-            inline: true
+            var modal = new bootstrap.Modal(calendarModal);
+            modal.show();
         });
     </script>
+
     </body>
     <div class="container custom-container">
         <div class="row m-1">

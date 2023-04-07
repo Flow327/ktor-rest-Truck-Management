@@ -19,6 +19,8 @@ fun Application.configureRoutes() {
         weatherRoute()
         deleteDriverRoute()
         deleteYardOutDriverRoute()
+        yardOutByDateRoute()
+        datesWithRecordsRoute()
     }
 }
 

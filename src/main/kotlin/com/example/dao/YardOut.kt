@@ -18,6 +18,7 @@ object YardOut : Table() {
     val usedParking =bool("usedParking").default(false)
     val usedDoors =bool("usedDoors").default(false)
     val emailSent = bool("emailSent").default(false)
+    val yardOutDate = varchar("date", 250)
 
     override val primaryKey = PrimaryKey(Drivers.id)
 }
