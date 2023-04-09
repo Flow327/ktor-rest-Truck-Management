@@ -59,7 +59,6 @@
         .date-with-record {
             background-color: lightblue;
         }
-
     </style>
     <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -72,9 +71,6 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="/stats">Status</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/weather">Weather</a>
                     </li>
                     <li class="nav-item">
                         <a id="calendar" class="nav-link active" data-bs-target="#calendarModal" aria-expanded="false">Calendar</a>
@@ -101,7 +97,6 @@
                             </div>
                         </div>
                     </div>
-                    </li>
                 </ul>
                 <form id="search-form" class="d-flex " action=/search method="post">
                     <label>
@@ -118,7 +113,6 @@
             const data = await response.json();
             return data.map(dateString => new Date(dateString));
         }
-
         fetchDatesWithRecords().then(dates => {
             datesWithRecords = dates;
 
@@ -134,7 +128,6 @@
                 }
             });
         });
-
         (async function setupCalendar() {
             const datesWithRecords = await fetchDatesWithRecords();
 
@@ -150,15 +143,12 @@
                     return { enabled: true, classes: hasRecord ? 'date-with-record' : '' };
                 }
             });
-
-
             elem.addEventListener('changeDate', function (e) {
                 const selectedDate = e.detail.date;
                 const formattedDate = selectedDate.toISOString().split('T')[0];
                 window.location.href = '/day?date=' + formattedDate;
             });
         })();
-
         var calendarModal = document.getElementById('calendarModal');
         var myButton = document.querySelector('[data-bs-target="#calendarModal"]');
         myButton.addEventListener('click', function () {
@@ -166,7 +156,6 @@
             modal.show();
         });
     </script>
-
     </body>
     <div class="container custom-container">
         <div class="row m-1">

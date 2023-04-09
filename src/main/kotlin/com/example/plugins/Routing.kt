@@ -16,15 +16,14 @@ fun Application.configureRoutes() {
         yardOutDisplayRoute()
         statusRoute()
         searchRoute()
-        weatherRoute()
         deleteDriverRoute()
         deleteYardOutDriverRoute()
         yardOutByDateRoute()
         datesWithRecordsRoute()
+        weatherDataRoute()
+
     }
 }
-
-
 
 
 

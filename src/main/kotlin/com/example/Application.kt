@@ -53,25 +53,42 @@ fun main() {
 }
 // Function to get Weather
 fun getWeather(): WeatherResponse {
-    val client = OkHttpClient()
+    try {
+        val client = OkHttpClient()
 
-    val lat = "41.8562" // latitude for Windsor, CT
-    val lon = "-72.6437" // longitude for  Windsor, CT
-    val units = "imperial"
-    val apiKey = "f3c7fb83268e7789449af63628d70dcb" // replace with your OpenWeatherMap API key
+        val lat = "41.8562" // latitude for Windsor, CT
+        val lon = "-72.6437" // longitude for Windsor, CT
+        val units = "imperial"
+        val apiKey = "f3c7fb83268e7789449af63628d70dcb" // replace with your OpenWeatherMap API key
 
-    val url =
-        "https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$apiKey&units=$units&units=$units"
+        val url =
+            "https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$apiKey&units=$units&units=$units"
 
-    val request = Request.Builder()
-        .url(url)
-        .get()
-        .build()
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
 
-    val response = client.newCall(request).execute()
-    val responseString = response.body?.string() ?: ""
-    return Klaxon().parse<WeatherResponse>(responseString)!!
+        val response = client.newCall(request).execute()
+        val responseString = response.body?.string() ?: ""
+
+        // Log the response string
+        println("Response string: $responseString")
+
+        val weatherResponse = Klaxon().parse<WeatherResponse>(responseString)!!
+
+        // Log the WeatherResponse object
+        println("WeatherResponse: $weatherResponse")
+
+        return weatherResponse
+    } catch (e: Exception) {
+        // Log any exceptions
+        println("Exception in getWeather(): $e")
+        throw e
+    }
 }
+
+
 // Function to create the application module
 @OptIn(InternalAPI::class)
 fun Application.myApplicationModule() {

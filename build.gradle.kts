@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "1.8.0"
     id("io.ktor.plugin") version "2.2.3"
     kotlin("plugin.serialization") version "1.8.0"
+    id("application")
 }
 group = "com.example"
 version = "0.0.1"
