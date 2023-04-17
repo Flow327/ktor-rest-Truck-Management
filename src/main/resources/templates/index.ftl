@@ -62,7 +62,7 @@
             <th></th>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="table-body">
         <#list drivers as drv>
             <tr>
                 <td>${drv.id}</td>
@@ -96,6 +96,14 @@
         </tbody>
     </table>
 </@layout.mainLayout>
+<#noparse>
+    <script>
+        setInterval(function() {
+            location.reload();
+        }, 5000); // refresh every 5000 milliseconds (5 seconds)
+    </script>
+</#noparse>
+
 
 
 

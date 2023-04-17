@@ -71,6 +71,10 @@ fun Route.newDriverRoute() {
             }
         }
     }
+    get("/api/drivers") {
+        val drivers = dao.getAllDrivers()
+        call.respond(HttpStatusCode.OK, drivers)
+    }
 // Post request for the driver page
     post("/driver") {
         // Get the post parameters
