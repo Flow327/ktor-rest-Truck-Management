@@ -14,7 +14,7 @@
         <thead class="thead-dark">
         <tr>
             <th scope="col">Id</th>
-            <th scope="col">Company Name</th>
+            <th scope="col">Carrier Name</th>
             <th scope="col">Door Or Lane Number</th>
             <th scope="col">Trailer Number</th>
             <th></th>

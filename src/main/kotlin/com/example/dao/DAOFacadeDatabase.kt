@@ -413,6 +413,8 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             .map { LocalDate.parse(it[YardOut.yardOutDate]) }
     }
 
+
+
     // Closes the database
     override fun close() {
 

@@ -51,7 +51,7 @@
         <thead>
         <tr>
             <th scope="col">Id</th>
-            <th scope="col">Company Name</th>
+            <th scope="col">Carrier Name</th>
             <th scope="col">Door Or Lane Number</th>
             <th scope="col">Trailer Number</th>
             <th scope="col">Contents</th>
@@ -98,9 +98,9 @@
 </@layout.mainLayout>
 <#noparse>
     <script>
-        setInterval(function() {
-            location.reload();
-        }, 5000); // refresh every 5000 milliseconds (5 seconds)
+        setTimeout(function () {
+            window.location.href = "/";
+        }, 5000); // Navigate to the link every 5000 milliseconds (5 seconds)
     </script>
 </#noparse>
 

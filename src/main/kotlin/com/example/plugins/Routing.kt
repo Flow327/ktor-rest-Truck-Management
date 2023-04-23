@@ -21,8 +21,8 @@ fun Application.configureRoutes() {
         yardOutByDateRoute()
         datesWithRecordsRoute()
         weatherDataRoute()
-
     }
+
 }
 
 

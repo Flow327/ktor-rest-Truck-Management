@@ -37,6 +37,11 @@ fun Route.homePageRoute(){
         Transport.send(message)
     }
     get("/") {
+        call.response.header("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
+        call.response.header("Pragma", "no-cache")
+        call.response.header("Expires", "0")
+        call.response.header("Surrogate-Control", "no-store")
+
         // Respond with the FreeMarker template and the list of drivers
         call.respond(FreeMarkerContent("index.ftl", mapOf("drivers" to dao.getAllDrivers())))
 
