@@ -17,7 +17,7 @@ import javax.mail.internet.MimeMessage
 fun Route.homePageRoute(){
     fun sendNotificationEmail(driver: Driver, subject: String, status: String) {
         val to =
-            arrayOf("julio.acostasilverio@walgreens.com,justin.roberts@walgreens.com,luis.baez@walgreens.com,jarred.bennettmoorer@walgreens.com,John.Botero@walgreens.com,frank.capaccio@walgreens.com,ian.earle@walgreens.com,matt.flaherty@walgreens.com,david.matthew.johnson@walgreens.com,anderson.oyola@walgreens.com,tuan.pham@walgreens.com,timothy.reardon@walgreens.com,duane.smith@walgreens.com,mark.arnold@walgreens.com,pablo.mendez@walgreens.com,robert.staniewicz@walgreens.com,desmond.ledford@walgreens.com") // Add more email addresses as needed
+            arrayOf("julio.acostasilverio@walgreens.com,justin.roberts@walgreens.com,luis.baez@walgreens.com,jarred.bennettmoorer@walgreens.com,John.Botero@walgreens.com,frank.capaccio@walgreens.com,ian.earle@walgreens.com,matt.flaherty@walgreens.com,david.matthew.johnson@walgreens.com,anderson.oyola@walgreens.com,tuan.pham@walgreens.com,timothy.reardon@walgreens.com,duane.smith@walgreens.com,mark.arnold@walgreens.com,pablo.mendez@walgreens.com,robert.staniewicz@walgreens.com,desmond.ledford@walgreens.com")
         val from = "julio.acostasilverio@walgreens.com"
         val host = "corpsmtp.walgreens.com"
 

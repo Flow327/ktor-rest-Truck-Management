@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
@@ -68,9 +70,18 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:2.2.4")
     implementation("io.ktor:ktor-server-webjars:$ktor_version")
+    implementation(kotlin("stdlib-jdk8"))
 
 
 }
 tasks.named<JavaExec>("run") {
     standardInput = System.`in`
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "1.8"
 }
