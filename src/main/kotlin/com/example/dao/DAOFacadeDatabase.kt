@@ -49,8 +49,8 @@ interface DAOFacade : Closeable {
         Driver(
             id = row[Drivers.id],
             name = row[Drivers.name],
-            parking = row[Drivers.parking],
-            door = row[Drivers.door],
+            parking = row[Drivers.parking] ?: 0,
+            door = row[Drivers.door] ?: 0,
             truckNumber = row[Drivers.truckNumber],
             contents = row[Drivers.contents],
             container = row[Drivers.container],
@@ -115,8 +115,8 @@ interface DAOFacade : Closeable {
 class DAOFacadeDatabase(val db: Database) : DAOFacade {
     // Initializes the database
     override fun init() = transaction(db) {
-       //SchemaUtils.drop(Drivers, YardOut)
-        //SchemaUtils.create(Drivers, YardOut)
+       SchemaUtils.drop(Drivers, YardOut)
+        SchemaUtils.create(Drivers, YardOut)
     }
     // Creates a driver in the database
     override fun createDriver(
@@ -132,18 +132,6 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
         usedParking: Boolean,
         usedDoors: Boolean
     ) = transaction(db) {
-
-        // Check if there is already a driver with the same parking or door number
-        val existingDriversWithSameParkingOrDoor = Drivers.select {
-            (Drivers.parking eq parking) or (Drivers.door eq door)
-        }.orderBy(Drivers.timeStamp to SortOrder.ASC).toList()
-
-        // If there is an existing driver with the same parking or door number, delete the oldest one
-        if (existingDriversWithSameParkingOrDoor.isNotEmpty()) {
-            val oldestDriver = existingDriversWithSameParkingOrDoor.first()
-            val oldestDriverId = oldestDriver[Drivers.id]
-            Drivers.deleteWhere { Drivers.id eq oldestDriverId }
-        }
 
         // Inserts the new driver into the Drivers table
         Drivers.insert {
@@ -213,8 +201,8 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             Driver(
                 it[Drivers.id],
                 it[Drivers.name],
-                it[Drivers.parking],
-                it[Drivers.door],
+                it[Drivers.parking] ?: 0,
+                it[Drivers.door] ?: 0,
                 it[Drivers.truckNumber],
                 it[Drivers.contents],
                 it[Drivers.container],
@@ -236,8 +224,8 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             Driver(
                 it[Drivers.id],
                 it[Drivers.name],
-                it[Drivers.parking],
-                it[Drivers.door],
+                it[Drivers.parking] ?: 0,
+                it[Drivers.door] ?: 0,
                 it[Drivers.truckNumber],
                 it[Drivers.contents],
                 it[Drivers.container],
@@ -257,9 +245,10 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
     override fun getUnusedParkingNumbers(): List<Int> {
         return transaction {
             Drivers.selectAll()
-                .map { it[Drivers.parking] }
+                .mapNotNull { it[Drivers.parking] }  // use mapNotNull to filter out null values
         }
     }
+
     override fun setParkingAsUnused(parking: Int) {
         transaction {
             Drivers.update({ Drivers.parking eq parking }) {
@@ -271,9 +260,10 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
     override fun getUnusedDoorNumbers(): List<Int> {
         return transaction {
             Drivers.selectAll()
-                .map { it[Drivers.door] }
+                .mapNotNull { it[Drivers.door] }  // use mapNotNull to filter out null values
         }
     }
+
     override fun setDoorAsUnused(door: Int) {
         transaction {
             Drivers.update({ Drivers.door eq door }) {
@@ -341,8 +331,8 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             Driver(
                 id = it[YardOut.id],
                 name = it[YardOut.name],
-                parking = it[YardOut.parking],
-                door = it[YardOut.door],
+                parking = it[YardOut.parking] ?: 0,
+                door = it[YardOut.door] ?: 0,
                 truckNumber = it[YardOut.truckNumber],
                 contents = it[YardOut.contents],
                 container = it[YardOut.container],
@@ -360,8 +350,8 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             Driver(
                 id = it[YardOut.id],
                 name = it[YardOut.name],
-                parking = it[YardOut.parking],
-                door = it[YardOut.door],
+                parking = it[YardOut.parking] ?: 0,
+                door = it[YardOut.door] ?: 0,
                 truckNumber = it[YardOut.truckNumber],
                 contents = it[YardOut.contents],
                 container = it[YardOut.container],
@@ -382,8 +372,8 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
                 Driver(
                     id = it[YardOut.id],
                     name = it[YardOut.name],
-                    parking = it[YardOut.parking],
-                    door = it[YardOut.door],
+                    parking = it[YardOut.parking] ?: 0,
+                    door = it[YardOut.door] ?: 0,
                     truckNumber = it[YardOut.truckNumber],
                     contents = it[YardOut.contents],
                     container = it[YardOut.container],
