@@ -12,10 +12,10 @@ object Drivers : Table() {
     val name = varchar("name", 50)
 
     //Declare a varchar variable called parking with a length of 50
-    val parking = integer("parking")
+    val parking = integer("parking").nullable()
 
     //Declare a varchar variable called parking with a length of 50
-    val door = integer("door")
+    val door = integer("door").nullable()
 
     //Declare a varchar variable called truckNumber with a length of 100
     val truckNumber = varchar("truckNumber", 100)

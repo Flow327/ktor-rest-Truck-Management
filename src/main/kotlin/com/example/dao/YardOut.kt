@@ -7,8 +7,8 @@ import org.jetbrains.exposed.sql.Table
 object YardOut : Table() {
     val id: Column<Int> = integer("id").autoIncrement()
     val name: Column<String> = varchar("name", 50)
-    val parking: Column<Int> = integer("parking")
-    val door: Column<Int> = integer("door")
+    val parking: Column<Int?> = integer("parking").nullable()
+    val door: Column<Int?> = integer("door").nullable()
     val truckNumber: Column<String> = varchar("truckNumber", 100)
     val contents: Column<String> = varchar("contents", 100)
     val container: Column<String> = varchar("containers", 100)
