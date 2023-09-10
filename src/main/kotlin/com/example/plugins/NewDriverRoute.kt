@@ -99,25 +99,30 @@ fun Route.newDriverRoute() {
                 val id = postParameters["id"]
                 if (id != null) {
                     val existingDriver = dao.getDriver(id.toInt())
-                    val newParking = postParameters["parking"]?.toInt() ?: 0
-                    val newDoor = postParameters["door"]?.toInt() ?: 0
+                    val newParking = postParameters["parking"]?.toIntOrNull() ?: existingDriver?.parking
+                    val newDoor = postParameters["door"]?.toIntOrNull() ?: existingDriver?.door
+
 
                     val usedParking = existingDriver?.parking != newParking
                     val usedDoors = existingDriver?.door != newDoor
 
-                    dao.updateDriver(
-                        id.toInt(),
-                        postParameters["name"] ?: "",
-                        newParking,
-                        newDoor,
-                        postParameters["truckNumber"] ?: "",
-                        postParameters["contents"] ?: "",
-                        postParameters["container"] ?: "",
-                        postParameters["comments"] ?: "",
-                        postParameters["updateStamp"] ?: "",
-                        usedParking = usedParking,
-                        usedDoors = usedDoors
-                    )
+                    if (newParking != null) {
+                        if (newDoor != null) {
+                            dao.updateDriver(
+                                id.toInt(),
+                                postParameters["name"] ?: "",
+                                newParking,
+                                newDoor,
+                                postParameters["truckNumber"] ?: "",
+                                postParameters["contents"] ?: "",
+                                postParameters["container"] ?: "",
+                                postParameters["comments"] ?: "",
+                                postParameters["updateStamp"] ?: "",
+                                usedParking = usedParking,
+                                usedDoors = usedDoors
+                            )
+                        }
+                    }
                 }
             }
             // If the action is edit, get the id from the post parameters
