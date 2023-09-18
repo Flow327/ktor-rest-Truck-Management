@@ -23,8 +23,8 @@ interface DAOFacade : Closeable {
         contents: String,
         container: String,
         comments: String,
-        timeStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString(),
-        updateStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString(),
+        timeStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")).toString(),
+        updateStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")).toString(),
         usedParking: Boolean,
         usedDoors: Boolean
     )
@@ -38,7 +38,7 @@ interface DAOFacade : Closeable {
         contents: String,
         container: String,
         comments: String,
-        updateStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString() ?:"",
+        updateStamp: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")).toString() ?:"",
         usedParking: Boolean,
         usedDoors: Boolean
     )
@@ -112,8 +112,8 @@ interface DAOFacade : Closeable {
 class DAOFacadeDatabase(val db: Database) : DAOFacade {
     // Initializes the database
     override fun init() = transaction(db) {
-       SchemaUtils.drop(Drivers, YardOut)
-        SchemaUtils.create(Drivers, YardOut)
+       //SchemaUtils.drop(Drivers, YardOut)
+        //SchemaUtils.create(Drivers, YardOut)
     }
     // Creates a driver in the database
     override fun createDriver(
@@ -134,7 +134,7 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             it[Drivers.parking] = parking; it[Drivers.door] = door; it[Drivers.truckNumber] =
             truckNumber; it[Drivers.contents] = contents; it[Drivers.container] = container
             it[Drivers.comments] = comments; it[Drivers.timeStamp] =
-            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString();
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")).toString();
             it[Drivers.usedParking] = usedParking;
             it[Drivers.usedDoors] = usedDoors
         }
@@ -163,7 +163,7 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             it[Drivers.container] = container
             it[Drivers.comments] = comments
             it[Drivers.updateStamp] =
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString()
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")).toString()
             it[Drivers.usedParking] = usedParking
             it[Drivers.usedDoors] = usedDoors
 

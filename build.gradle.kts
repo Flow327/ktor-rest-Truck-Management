@@ -51,6 +51,7 @@ dependencies {
     implementation("io.ktor:ktor-server-freemarker:2.2.4")
     implementation("org.freemarker:freemarker:2.3.32")
     implementation("io.ktor:ktor-freemarker:1.6.8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.5.2")
     implementation("io.ktor:ktor-server-call-logging-jvm:2.2.4")
     implementation("io.ktor:ktor-server-netty-jvm:2.2.4")
     implementation("io.ktor:ktor-client-cio-jvm:2.2.4")

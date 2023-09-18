@@ -17,7 +17,7 @@ import javax.mail.internet.MimeMessage
 fun Route.homePageRoute(){
     fun sendNotificationEmail(driver: Driver, subject: String, status: String) {
         val to =
-            arrayOf("julio.acostasilverio@walgreens.com,justin.roberts@walgreens.com,luis.baez@walgreens.com,jarred.bennettmoorer@walgreens.com,John.Botero@walgreens.com,frank.capaccio@walgreens.com,ian.earle@walgreens.com,matt.flaherty@walgreens.com,david.matthew.johnson@walgreens.com,anderson.oyola@walgreens.com,tuan.pham@walgreens.com,timothy.reardon@walgreens.com,duane.smith@walgreens.com,mark.arnold@walgreens.com,pablo.mendez@walgreens.com,robert.staniewicz@walgreens.com,desmond.ledford@walgreens.com")
+            arrayOf("julio.acostasilverio@walgreens.com")
         val from = "julio.acostasilverio@walgreens.com"
         val host = "corpsmtp.walgreens.com"
 
@@ -48,7 +48,7 @@ fun Route.homePageRoute(){
         // Iterate through all drivers and check if their timestamp is older than 5 or 8 days
         dao.getAllDrivers().forEach { driver ->
             if (!driver.emailSent) { // Check if the email has already been sent
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")
                 val timestamp = LocalDateTime.parse(driver.timeStamp, formatter)
                 val fiveDaysAgo = LocalDateTime.now().minusDays(5)
                 val eightDaysAgo = LocalDateTime.now().minusDays(8)
