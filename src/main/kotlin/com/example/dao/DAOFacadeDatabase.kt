@@ -17,7 +17,6 @@ interface DAOFacade : Closeable {
 
     // Creates a driver in the database
     fun createDriver(
-        name: String,
         parking: Int,
         door: Int,
         truckNumber: String,
@@ -33,7 +32,6 @@ interface DAOFacade : Closeable {
     // Updates a driver in the database
     fun updateDriver(
         id: Int,
-        name: String,
         parking: Int,
         door: Int,
         truckNumber: String,
@@ -48,7 +46,6 @@ interface DAOFacade : Closeable {
     fun toDriver(row: ResultRow): Driver =
         Driver(
             id = row[Drivers.id],
-            name = row[Drivers.name],
             parking = row[Drivers.parking] ?: 0,
             door = row[Drivers.door] ?: 0,
             truckNumber = row[Drivers.truckNumber],
@@ -120,7 +117,6 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
     }
     // Creates a driver in the database
     override fun createDriver(
-        name: String,
         parking: Int,
         door: Int,
         truckNumber: String,
@@ -135,7 +131,7 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
 
         // Inserts the new driver into the Drivers table
         Drivers.insert {
-            it[Drivers.name] = name; it[Drivers.parking] = parking; it[Drivers.door] = door; it[Drivers.truckNumber] =
+            it[Drivers.parking] = parking; it[Drivers.door] = door; it[Drivers.truckNumber] =
             truckNumber; it[Drivers.contents] = contents; it[Drivers.container] = container
             it[Drivers.comments] = comments; it[Drivers.timeStamp] =
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString();
@@ -148,7 +144,6 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
     // Updates a driver in the database
     override fun updateDriver(
         id: Int,
-        name: String,
         parking: Int,
         door: Int,
         truckNumber: String,
@@ -161,7 +156,6 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
     ) = transaction(db) {
         // Updates the driver in the Drivers table
         Drivers.update({ Drivers.id eq id }) {
-            it[Drivers.name] = name
             it[Drivers.parking] = parking
             it[Drivers.door] = door
             it[Drivers.truckNumber] = truckNumber
@@ -200,7 +194,6 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             // Maps the driver to a Driver object
             Driver(
                 it[Drivers.id],
-                it[Drivers.name],
                 it[Drivers.parking] ?: 0,
                 it[Drivers.door] ?: 0,
                 it[Drivers.truckNumber],
@@ -223,7 +216,6 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             // Maps the drivers to Driver objects
             Driver(
                 it[Drivers.id],
-                it[Drivers.name],
                 it[Drivers.parking] ?: 0,
                 it[Drivers.door] ?: 0,
                 it[Drivers.truckNumber],
@@ -308,7 +300,6 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             val driver = Drivers.select { Drivers.id eq id }.singleOrNull()
             driver?.let { row ->
                 YardOut.insert {
-                    it[name] = row[Drivers.name]
                     it[parking] = row[Drivers.parking]
                     it[door] = row[Drivers.door]
                     it[truckNumber] = row[Drivers.truckNumber]
@@ -330,7 +321,6 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
         YardOut.selectAll().map {
             Driver(
                 id = it[YardOut.id],
-                name = it[YardOut.name],
                 parking = it[YardOut.parking] ?: 0,
                 door = it[YardOut.door] ?: 0,
                 truckNumber = it[YardOut.truckNumber],
@@ -349,7 +339,6 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
         YardOut.select { YardOut.id eq id }.map {
             Driver(
                 id = it[YardOut.id],
-                name = it[YardOut.name],
                 parking = it[YardOut.parking] ?: 0,
                 door = it[YardOut.door] ?: 0,
                 truckNumber = it[YardOut.truckNumber],
@@ -371,7 +360,6 @@ class DAOFacadeDatabase(val db: Database) : DAOFacade {
             .map {
                 Driver(
                     id = it[YardOut.id],
-                    name = it[YardOut.name],
                     parking = it[YardOut.parking] ?: 0,
                     door = it[YardOut.door] ?: 0,
                     truckNumber = it[YardOut.truckNumber],

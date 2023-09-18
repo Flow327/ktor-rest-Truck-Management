@@ -2,11 +2,6 @@
 <@layout.mainLayout title="New Driver">
     <form action="/driver" method="post" xmlns="http://www.w3.org/1999/html">
         <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="Enter Company Name"
-                   value="${(driver.name)!}">
-        </div>
-        <div class="form-group">
             <label for="parking">Parking Or Door</label>
             <select type="text" class="form-control" id="parking" name="parking">
                 <option value="" disabled selected> Current Number ${(driver.parking)!}</option>

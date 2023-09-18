@@ -62,7 +62,6 @@ fun Route.deleteYardOutDriverRoute() {
 
                     // Create a new driver in the original Drivers table with the fetched yard out driver's data
                     dao.createDriver(
-                        name = yardOutDriver.name,
                         parking = yardOutDriver.parking,
                         door = yardOutDriver.door,
                         truckNumber = yardOutDriver.truckNumber,

@@ -4,7 +4,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 data class Driver(val id: Int,
-                  val name: String,
                   val parking: Int,
                   val door: Int,
                   val truckNumber: String,

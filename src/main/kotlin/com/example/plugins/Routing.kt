@@ -8,7 +8,6 @@ fun Application.configureRoutes() {
     routing {
         newDriverRoute()
         homePageRoute()
-        landingRoutes()
         yardOutRoute()
         yardLaneRoute()
         doorNumberRoute()

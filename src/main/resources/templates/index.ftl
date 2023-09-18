@@ -51,7 +51,6 @@
         <thead>
         <tr>
             <th scope="col">Id</th>
-            <th scope="col">Carrier Name</th>
             <th scope="col">Door Or Lane Number</th>
             <th scope="col">Trailer Number</th>
             <th scope="col">Contents</th>
@@ -66,7 +65,6 @@
         <#list drivers as drv>
             <tr>
                 <td>${drv.id}</td>
-                <td>${drv.name}</td>
                 <td>${drv.parking}</td>
                 <td>${drv.truckNumber}</td>
                 <td>${drv.contents}</td>

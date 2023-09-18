@@ -83,7 +83,6 @@ fun Route.newDriverRoute() {
         when (postParameters["action"] ?: "new") {
             // If the action is new, create a new driver
             "new" -> dao.createDriver(
-                postParameters["name"] ?: "",
                 postParameters["parking"]?.toInt() ?: 0,
                 postParameters["door"]?.toInt() ?: 0,
                 postParameters["truckNumber"] ?: "",
@@ -110,7 +109,6 @@ fun Route.newDriverRoute() {
                         if (newDoor != null) {
                             dao.updateDriver(
                                 id.toInt(),
-                                postParameters["name"] ?: "",
                                 newParking,
                                 newDoor,
                                 postParameters["truckNumber"] ?: "",

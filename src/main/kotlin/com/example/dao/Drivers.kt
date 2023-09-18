@@ -8,9 +8,6 @@ object Drivers : Table() {
     //Declare an integer variable called id that auto increments
     val id = integer("id").autoIncrement()
 
-    //Declare a varchar variable called name with a length of 50
-    val name = varchar("name", 50)
-
     //Declare a varchar variable called parking with a length of 50
     val parking = integer("parking").nullable()
 
