@@ -97,7 +97,7 @@ fun Route.yardOutByDateRoute() {
     get("/day") {
         val dateString = call.request.queryParameters["date"]
         if (dateString != null) {
-            val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss")
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             val date = LocalDate.parse(dateString, formatter)
             val driversByDate = dao.getYardOutDriversByDate(date)
 
